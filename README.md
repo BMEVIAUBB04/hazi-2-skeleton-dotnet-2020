@@ -10,6 +10,13 @@ Visual Studio használata esetén az alábbi [_workload_](https://docs.microsoft
 
 Ezt a _Visual Studio Installer_ (start menüben keresendő) segítségével telepíthetjük, a _Modify_ gomb megnyomásával.
 
+## Webalkalmazás elindítása
+
+1. A `Bme.Aut.Logistics` projekt legyen a startup projekt: _Solution Explorer_-ben jobb kattintás a projektre és _Set as Startup Project_.
+1. A főmenüben _Build/Build Solution_-nel fordítás, majd _Debug/Start Debugging_-gal indítás.
+1. A program konzol alkalmazásként indul, ez hosztolja a webalkalmazást. A logot a konzolban (és a Visual Studio output ablakában is) láthatjuk.
+1. A webalkalmazás a `http://localhost:5000/` címen érhető el, ezen belül a relatív URL-ek a feladatkiírás szerint készítendőek el.
+
 ## Tesztek futtatása
 
-A kiadott projekt váz tartalmaz teszteket is, amivel ellenőrizhető a megoldás. A tesztek futtatására a Visual Studio [_Test Explorer_](https://docs.microsoft.com/en-us/visualstudio/test/run-unit-tests-with-test-explorer?view=vs-2019)-t használhatjuk. Fontos, hogy a teszt kódot ne módosítsátok, ezt beadáskor ellenőrizzük.
+A kiadott projekt váz tartalmaz teszteket is, amivel ellenőrizhető a megoldás. A tesztek maguk elindítják a webalkalmazást, így a tesztek futtatásához nem szükséges az alkalmazás előzetes futtatása. A tesztek futtatására a Visual Studio [_Test Explorer_](https://docs.microsoft.com/en-us/visualstudio/test/run-unit-tests-with-test-explorer?view=vs-2019)-t használhatjuk. Fontos, hogy a teszt kódot ne módosítsátok, ezt beadáskor ellenőrizzük.
