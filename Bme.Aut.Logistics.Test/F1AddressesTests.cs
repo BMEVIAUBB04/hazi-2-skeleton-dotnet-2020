@@ -167,5 +167,64 @@ namespace Bme.Aut.Logistics.Test
                 response.EnsureSuccessStatusCode();
             }
         }
+
+        [TestMethod]
+        public async Task F1PutDoesNotExist()
+        {
+            using (var testScope = TestWebAppFactory.Create())
+            {
+                testScope.AddSeedEntities(TestAddresses);
+                var client = testScope.CreateClient();
+
+                var response = await client.PutAsJsonAsync("/addresses/1234567", new Address(47.31, 19.05, "HU", "BUDAPEST", "1111", "street1", "2") { Id = 1234567 });
+
+                Assert.AreEqual(System.Net.HttpStatusCode.NotFound, response.StatusCode);
+            }
+        }
+
+        [TestMethod]
+        public async Task F1PutWithMissingProperties()
+        {
+            using (var testScope = TestWebAppFactory.Create())
+            {
+                testScope.AddSeedEntities(TestAddresses);
+                var client = testScope.CreateClient();
+                var recordToUpdate = testScope.GetDbTableContent<Address>().Last();
+
+                var response = await client.PutAsJsonAsync($"/addresses/{recordToUpdate.Id}", new Address() { City = "Budapest" });
+
+                Assert.AreEqual(System.Net.HttpStatusCode.BadRequest, response.StatusCode);
+            }
+        }
+
+        [TestMethod]
+        public async Task F1PutWithSuccess()
+        {
+            using (var testScope = TestWebAppFactory.Create())
+            {
+                testScope.AddSeedEntities(TestAddresses);
+
+                var client = testScope.CreateClient();
+                var recordToUpdate = testScope.GetDbTableContent<Address>().Last();
+                recordToUpdate.City = "Some new city";
+                recordToUpdate.Street = "Some new street";
+
+                var response = await client.PutAsJsonAsync($"/addresses/{recordToUpdate.Id}", recordToUpdate);
+
+                response.EnsureSuccessStatusCode();
+                var putResponse = await response.Content.ReadAsAsync<Address>();
+
+                Assert.IsNotNull(putResponse);
+                Assert.AreEqual(recordToUpdate.Id, putResponse.Id);
+                Assert.AreEqual(recordToUpdate.City, putResponse.City);
+                Assert.AreEqual(recordToUpdate.Street, putResponse.Street);
+
+                var updatedRecord = testScope.GetDbTableContent<Address>().SingleOrDefault(x => x.Id == recordToUpdate.Id);
+                Assert.IsNotNull(updatedRecord);
+                Assert.AreEqual(recordToUpdate.Id, updatedRecord.Id);
+                Assert.AreEqual(recordToUpdate.City, updatedRecord.City);
+                Assert.AreEqual(recordToUpdate.Street, updatedRecord.Street);
+            }
+        }
     }
 }
